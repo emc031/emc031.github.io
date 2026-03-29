@@ -103,7 +103,7 @@
       top: -30px;
       width: 320px;
       height: 320px;
-      opacity: 0.20;
+      opacity: 0.14;
       pointer-events: none;
       user-select: none;
     }
@@ -219,23 +219,75 @@
       flex-wrap: wrap;
       gap: 0.5rem;
     }
+
+    .hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+@media (max-width: 600px) {
+  .hamburger { display: flex; }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 56px;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    padding: 1rem 2rem;
+    gap: 0.25rem;
+  }
+
+  .nav-links.open { display: flex; }
+
+  .nav-links li a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .nav-links li a.primary {
+    display: inline-block;
+    margin-top: 0.25rem;
+  }
+}
   </style>
 </head>
 <body>
 
-  <nav>
-    <a class="nav-logo" href="#">
-      <img src="inta.svg" alt="integral altruism logo" />
-      integral altruism
-    </a>
-    <ul class="nav-links">
-      <li><a href="https://luma.com/integralaltruism" target="_blank">events</a></li>
-      <li><a href="https://integralaltruism.substack.com/" target="_blank">substack</a></li>
-      <li><a href="https://www.youtube.com/@IntegralAltruism" target="_blank">talks</a></li>
-      <li><a href="https://manifund.org/projects/integral-altruism" target="_blank">donate</a></li>
-      <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfAbQM6FjKTZF-EwD4yA-Ulk_IgI8GhjKe_dnajqOdGX4KR3g/viewform" target="_blank" class="primary">get involved</a></li>
-    </ul>
-  </nav>
+<nav>
+  <a class="nav-logo" href="#">
+    <img src="inta.svg" alt="integral altruism logo" />
+    integral altruism
+  </a>
+  <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'false' ? 'true' : 'false'); document.getElementById('nav-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-menu">
+    <li><a href="https://luma.com/integralaltruism" target="_blank">events</a></li>
+    <li><a href="https://integralaltruism.substack.com/" target="_blank">substack</a></li>
+    <li><a href="https://www.youtube.com/@IntegralAltruism" target="_blank">talks</a></li>
+    <li><a href="https://manifund.org/projects/integral-altruism" target="_blank">donate</a></li>
+    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfAbQM6FjKTZF-EwD4yA-Ulk_IgI8GhjKe_dnajqOdGX4KR3g/viewform" target="_blank" class="primary">get involved</a></li>
+  </ul>
+</nav>
 
   <div class="hero">
     <img class="hero-bg-logo" src="inta.svg" alt="" aria-hidden="true" />
