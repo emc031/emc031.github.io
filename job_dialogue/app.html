@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>job dialogue</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f2ed;
+      --ink: #1a1a18;
+      --ink-muted: #5a5750;
+      --accent: #b5451b;
+      --border: #ddd9d2;
+      --max-w: 900px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      padding: 3rem 2rem;
+    }
+
+    .container { max-width: var(--max-w); margin: 0 auto; }
+
+    h1 {
+      font-family: 'Lora', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    .field { margin-bottom: 1.25rem; }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="password"], textarea {
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      resize: vertical;
+    }
+
+    input[type="password"]:focus, textarea:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.65rem 1.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    button:hover { background: #8f3614; }
+    button:disabled { background: var(--ink-muted); cursor: not-allowed; }
+
+    .responses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .response-box {
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      border: 1.5px solid transparent;
+    }
+
+    .response-box h2 {
+      font-family: 'Lora', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .response-box p {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .loading { color: var(--ink-muted); font-style: italic; }
+    .error { color: #b5241b; font-size: 0.88rem; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Is this job good for the world?</h1>
+
+  <div class="field">
+    <label for="job-input">Job description</label>
+    <textarea id="job-input" rows="6" placeholder="Paste a job add url or job description here..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runDialogue();}"></textarea>
+  </div>
+
+  <button id="submit-btn" onclick="runDialogue()">Ask the archetypes</button>
+  <div class="error" id="error-msg"></div>
+
+  <div class="responses" id="responses"></div>
+</div>
+
+<script src="config.js"></script>
+<script src="config.local.js"></script>
+<script>
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof API_KEY === "undefined" || API_KEY === "your-gemini-api-key-here") {
+      const errorEl = document.getElementById("error-msg");
+      errorEl.textContent = "Missing config.local.js or API_KEY not set. Create job_dialogue/config.local.js with: const API_KEY = \"your-gemini-api-key-here\";";
+      document.getElementById("submit-btn").disabled = true;
+    }
+  });
+
+  async function callGemini(apiKey, prompt) {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+      }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    return data.candidates[0].content.parts[0].text;
+  }
+
+  async function runDialogue() {
+    const apiKey = API_KEY;
+    const job = document.getElementById("job-input").value.trim();
+    const errorEl = document.getElementById("error-msg");
+    const btn = document.getElementById("submit-btn");
+    const responsesEl = document.getElementById("responses");
+
+    errorEl.textContent = "";
+
+    if (!job) { errorEl.textContent = "Please enter a job description."; return; }
+
+    // Render placeholder boxes
+    responsesEl.innerHTML = ARCHETYPES.map(a => `
+      <div class="response-box" style="background:${a.bg}; border-color:${a.border}">
+        <h2>${a.name}</h2>
+        <p class="loading">thinking…</p>
+      </div>
+    `).join("");
+
+    btn.disabled = true;
+
+    // Fire all archetype calls in parallel
+    const calls = ARCHETYPES.map((a, i) =>
+      callGemini(apiKey, a.description + QUESTION + job)
+        .then(text => ({ i, text, error: null }))
+        .catch(err => ({ i, text: null, error: err.message }))
+    );
+
+    for (const result of await Promise.all(calls)) {
+      const box = responsesEl.children[result.i];
+      const p = box.querySelector("p");
+      p.classList.remove("loading");
+      p.textContent = result.error ? `Error: ${result.error}` : result.text;
+    }
+
+    btn.disabled = false;
+  }
+</script>
+</body>
+</html>
