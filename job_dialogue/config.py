@@ -4,15 +4,16 @@
 #   "gpt-4o"                     (OpenAI)
 MODEL = "claude-haiku-4-5-20251001"
 
-QUESTION = "\n\n
+QUESTION = """
 
 Given the job description below, would doing this job have a good effect on the world? Give an honest assessment from your perspective.
 
-If part of the text contains a URL, let the user know that if they want you to read that website they need to enter a URL _only_ (with no extra text)
+If part of the text contains a URL, let the user know that if they want you to read that website they need to enter a URL _only_ (with no extra text).
 
 Don't lead with a title, and don't lead with saying that this is your honest perspective, who you are etc, just get straight to the point in your response.
 
-\n\nJob description:\n"
+Job description:
+"""
 
 ARCHETYPES = [
     {

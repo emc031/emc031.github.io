@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>job dialogue</title>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     :root {
       --bg: #f5f2ed;
@@ -100,11 +101,16 @@
       margin-bottom: 0.75rem;
     }
 
-    .response-box p {
+    .response-text {
       font-size: 0.92rem;
       line-height: 1.7;
-      white-space: pre-wrap;
     }
+
+    .response-box p { margin-bottom: 0.75rem; }
+    .response-box p:last-child { margin-bottom: 0; }
+    .response-box ul, .response-box ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+    .response-box li { margin-bottom: 0.25rem; }
+    .response-box strong { font-weight: 500; }
 
     .loading { color: var(--ink-muted); font-style: italic; }
     .error { color: #b5241b; font-size: 0.88rem; margin-top: 0.5rem; }
@@ -206,7 +212,7 @@
       responsesEl.innerHTML = archetypes.map(a => `
         <div class="response-box" style="background:${a.bg}; border-color:${a.border}">
           <h2>${a.name}</h2>
-          <p>${a.error ? "Error: " + a.error : a.text}</p>
+          <div class="response-text">${a.error ? "Error: " + a.error : marked.parse(a.text)}</div>
         </div>
       `).join("");
     } catch (err) {
