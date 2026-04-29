@@ -47,7 +47,7 @@
       margin-bottom: 0.4rem;
     }
 
-    input[type="password"], textarea {
+    textarea {
       width: 100%;
       background: #fff;
       border: 1px solid var(--border);
@@ -59,7 +59,7 @@
       resize: vertical;
     }
 
-    input[type="password"]:focus, textarea:focus {
+    textarea:focus {
       outline: 2px solid var(--accent);
       outline-offset: 1px;
     }
@@ -116,7 +116,7 @@
 
   <div class="field">
     <label for="job-input">Job description</label>
-    <textarea id="job-input" rows="6" placeholder="Paste a job add url or job description here..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runDialogue();}"></textarea>
+    <textarea id="job-input" rows="6" placeholder="Paste a job ad URL or job description here..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runDialogue();}"></textarea>
   </div>
 
   <button id="submit-btn" onclick="runDialogue()">Ask the archetypes</button>
@@ -125,68 +125,42 @@
   <div class="responses" id="responses"></div>
 </div>
 
-<script src="config.js"></script>
-<script src="config.local.js"></script>
 <script>
-
-  document.addEventListener("DOMContentLoaded", () => {
-    if (typeof API_KEY === "undefined" || API_KEY === "your-gemini-api-key-here") {
-      const errorEl = document.getElementById("error-msg");
-      errorEl.textContent = "Missing config.local.js or API_KEY not set. Create job_dialogue/config.local.js with: const API_KEY = \"your-gemini-api-key-here\";";
-      document.getElementById("submit-btn").disabled = true;
-    }
-  });
-
-  async function callGemini(apiKey, prompt) {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-      }
-    );
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${res.status}`);
-    }
-    const data = await res.json();
-    return data.candidates[0].content.parts[0].text;
-  }
-
   async function runDialogue() {
-    const apiKey = API_KEY;
     const job = document.getElementById("job-input").value.trim();
     const errorEl = document.getElementById("error-msg");
     const btn = document.getElementById("submit-btn");
     const responsesEl = document.getElementById("responses");
 
     errorEl.textContent = "";
-
     if (!job) { errorEl.textContent = "Please enter a job description."; return; }
 
-    // Render placeholder boxes
-    responsesEl.innerHTML = ARCHETYPES.map(a => `
-      <div class="response-box" style="background:${a.bg}; border-color:${a.border}">
-        <h2>${a.name}</h2>
-        <p class="loading">thinking…</p>
-      </div>
-    `).join("");
-
+    responsesEl.innerHTML = "<p class='loading'>Asking the archetypes…</p>";
     btn.disabled = true;
 
-    // Fire all archetype calls in parallel
-    const calls = ARCHETYPES.map((a, i) =>
-      callGemini(apiKey, a.description + QUESTION + job)
-        .then(text => ({ i, text, error: null }))
-        .catch(err => ({ i, text: null, error: err.message }))
-    );
+    try {
+      const res = await fetch("http://localhost:5000/api/dialogue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job }),
+      });
 
-    for (const result of await Promise.all(calls)) {
-      const box = responsesEl.children[result.i];
-      const p = box.querySelector("p");
-      p.classList.remove("loading");
-      p.textContent = result.error ? `Error: ${result.error}` : result.text;
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Server error ${res.status}`);
+      }
+
+      const archetypes = await res.json();
+
+      responsesEl.innerHTML = archetypes.map(a => `
+        <div class="response-box" style="background:${a.bg}; border-color:${a.border}">
+          <h2>${a.name}</h2>
+          <p>${a.error ? "Error: " + a.error : a.text}</p>
+        </div>
+      `).join("");
+    } catch (err) {
+      errorEl.textContent = "Error: " + err.message;
+      responsesEl.innerHTML = "";
     }
 
     btn.disabled = false;
