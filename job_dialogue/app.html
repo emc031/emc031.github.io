@@ -112,6 +112,28 @@
     .response-box li { margin-bottom: 0.25rem; }
     .response-box strong { font-weight: 500; }
 
+    .read-more-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 0.75rem;
+      text-decoration: underline;
+    }
+    .read-more-btn:hover { background: none; color: #8f3614; }
+
+    .responses.has-expanded .response-box:not(.expanded) { display: none; }
+    .responses.has-expanded { grid-template-columns: 1fr; }
+    .responses.has-expanded .response-box.expanded {
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
     .loading { color: var(--ink-muted); font-style: italic; }
     .error { color: #b5241b; font-size: 0.88rem; margin-top: 0.5rem; }
 
@@ -209,18 +231,42 @@
 
       const archetypes = await res.json();
 
-      responsesEl.innerHTML = archetypes.map(a => `
-        <div class="response-box" style="background:${a.bg}; border-color:${a.border}">
+      responsesEl.innerHTML = archetypes.map((a, i) => `
+        <div class="response-box" id="box-${i}" style="background:${a.bg}; border-color:${a.border}">
           <h2>${a.name}</h2>
-          <div class="response-text">${a.error ? "Error: " + a.error : marked.parse(a.text)}</div>
+          ${a.error
+            ? `<div class="response-text">Error: ${a.error}</div>`
+            : `<div class="response-text" id="text-${i}">${marked.parse(a.summary)}</div>
+               <button class="read-more-btn" onclick="expand(${i})" id="btn-${i}">Read more</button>`
+          }
         </div>
       `).join("");
+
+      window._archetypes = archetypes;
     } catch (err) {
       errorEl.textContent = "Error: " + err.message;
       responsesEl.innerHTML = "";
     }
 
     btn.disabled = false;
+  }
+
+  function expand(i) {
+    const a = window._archetypes[i];
+    document.getElementById("text-" + i).innerHTML = marked.parse(a.full);
+    document.getElementById("btn-" + i).textContent = "Read less";
+    document.getElementById("btn-" + i).setAttribute("onclick", `collapse(${i})`);
+    document.getElementById("box-" + i).classList.add("expanded");
+    document.getElementById("responses").classList.add("has-expanded");
+  }
+
+  function collapse(i) {
+    const a = window._archetypes[i];
+    document.getElementById("text-" + i).innerHTML = marked.parse(a.summary);
+    document.getElementById("btn-" + i).textContent = "Read more";
+    document.getElementById("btn-" + i).setAttribute("onclick", `expand(${i})`);
+    document.getElementById("box-" + i).classList.remove("expanded");
+    document.getElementById("responses").classList.remove("has-expanded");
   }
 </script>
 </body>

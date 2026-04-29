@@ -45,11 +45,17 @@ async def call_archetype(archetype, job):
         messages=[{"role": "user", "content": prompt}],
         api_key=API_KEY,
     )
+    raw = response.choices[0].message.content
+    parts = raw.split("===SUMMARY===", 1)
+    full = parts[0].strip()
+    summary = parts[1].strip() if len(parts) == 2 else full
+
     return {
         "name": archetype["name"],
         "bg": archetype["bg"],
         "border": archetype["border"],
-        "text": response.choices[0].message.content,
+        "full": full,
+        "summary": summary,
     }
 
 

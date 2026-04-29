@@ -12,6 +12,8 @@ If part of the text contains a URL, let the user know that if they want you to r
 
 Don't lead with a title, and don't lead with saying that this is your honest perspective, who you are etc, just get straight to the point in your response.
 
+Structure your response as follows: first your full assessment, then the exact separator ===SUMMARY===, then a single paragraph summary of your assessment.
+
 Job description:
 """
 
