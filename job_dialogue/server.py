@@ -2,32 +2,42 @@ import asyncio
 import sys
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
+import litellm
 
 from config import MODEL, QUESTION, ARCHETYPES
 try:
-    from config_local import API_KEY
+    from config_local import API_KEY, PASSWORD
 except ImportError:
-    print("ERROR: config_local.py not found. Create job_dialogue/config_local.py with: API_KEY = \"your-gemini-api-key\"", file=sys.stderr)
+    print("ERROR: config_local.py not found. Create job_dialogue/config_local.py with API_KEY and PASSWORD.", file=sys.stderr)
     API_KEY = None
+    PASSWORD = None
 
 app = Flask(__name__)
 CORS(app)
 
-if API_KEY:
-    genai.configure(api_key=API_KEY)
-
 
 async def call_archetype(archetype, job):
-    model = genai.GenerativeModel(MODEL)
     prompt = archetype["description"] + QUESTION + job
-    response = await asyncio.to_thread(model.generate_content, prompt)
+    response = await asyncio.to_thread(
+        litellm.completion,
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        api_key=API_KEY,
+    )
     return {
         "name": archetype["name"],
         "bg": archetype["bg"],
         "border": archetype["border"],
-        "text": response.text,
+        "text": response.choices[0].message.content,
     }
+
+
+@app.post("/api/auth")
+def auth():
+    body = request.json or {}
+    if PASSWORD and body.get("password") != PASSWORD:
+        return jsonify({"error": "Incorrect password"}), 401
+    return jsonify({"ok": True})
 
 
 @app.post("/api/dialogue")
@@ -35,7 +45,12 @@ def dialogue():
     if not API_KEY:
         return jsonify({"error": "API key not configured"}), 500
 
-    job = (request.json or {}).get("job", "").strip()
+    body = request.json or {}
+
+    if PASSWORD and body.get("password") != PASSWORD:
+        return jsonify({"error": "Incorrect password"}), 401
+
+    job = body.get("job", "").strip()
     if not job:
         return jsonify({"error": "No job description provided"}), 400
 

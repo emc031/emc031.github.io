@@ -1,5 +1,6 @@
 
-const MODEL = "gemini-2.5-flash-lite";
+/const MODEL = "gemini-2.5-flash-lite";
+/const MODEL = "claude-sonnet-4-6";
 
 const QUESTION = "\n\nGiven the job description below, would doing this job have a good effect on the world? Give an honest assessment from your perspective.\n\nJob description:\n";
 
