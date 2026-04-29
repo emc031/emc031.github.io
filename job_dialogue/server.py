@@ -1,8 +1,10 @@
 import asyncio
 import sys
+from bs4 import BeautifulSoup
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import litellm
+from playwright.async_api import async_playwright
 
 from config import MODEL, QUESTION, ARCHETYPES
 try:
@@ -14,6 +16,25 @@ except ImportError:
 
 app = Flask(__name__)
 CORS(app)
+
+
+async def fetch_url_text(url):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        await page.goto(url, wait_until="networkidle", timeout=15000)
+        html = await page.content()
+        await browser.close()
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup(["script", "style", "nav", "footer", "header"]):
+        tag.decompose()
+    return " ".join(soup.get_text(separator=" ").split())
+
+
+async def resolve_job_text(raw):
+    if raw.startswith("http://") or raw.startswith("https://"):
+        return await fetch_url_text(raw)
+    return raw
 
 
 async def call_archetype(archetype, job):
@@ -50,17 +71,21 @@ def dialogue():
     if PASSWORD and body.get("password") != PASSWORD:
         return jsonify({"error": "Incorrect password"}), 401
 
-    job = body.get("job", "").strip()
-    if not job:
+    job_raw = body.get("job", "").strip()
+    if not job_raw:
         return jsonify({"error": "No job description provided"}), 400
 
     async def run_all():
+        job = await resolve_job_text(job_raw)
         return await asyncio.gather(
             *[call_archetype(a, job) for a in ARCHETYPES],
             return_exceptions=True,
         )
 
-    results = asyncio.run(run_all())
+    try:
+        results = asyncio.run(run_all())
+    except Exception as e:
+        return jsonify({"error": f"Could not fetch URL: {e}"}), 400
 
     responses = []
     for archetype, result in zip(ARCHETYPES, results):

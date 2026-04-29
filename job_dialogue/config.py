@@ -1,10 +1,18 @@
 # LiteLLM model string — examples:
-#   "claude-sonnet-4-6"          (Anthropic, needs ANTHROPIC_API_KEY)
-#   "gemini/gemini-2.5-flash-lite" (Google, needs GEMINI_API_KEY)
-#   "gpt-4o"                     (OpenAI, needs OPENAI_API_KEY)
-MODEL = "claude-sonnet-4-6"
+#   "claude-sonnet-4-6"          (Anthropic)
+#   "gemini/gemini-2.5-flash-lite" (Google)
+#   "gpt-4o"                     (OpenAI)
+MODEL = "claude-haiku-4-5-20251001"
 
-QUESTION = "\n\nGiven the job description below, would doing this job have a good effect on the world? Give an honest assessment from your perspective.\n\nJob description:\n"
+QUESTION = "\n\n
+
+Given the job description below, would doing this job have a good effect on the world? Give an honest assessment from your perspective.
+
+If part of the text contains a URL, let the user know that if they want you to read that website they need to enter a URL _only_ (with no extra text)
+
+Don't lead with a title, and don't lead with saying that this is your honest perspective, who you are etc, just get straight to the point in your response.
+
+\n\nJob description:\n"
 
 ARCHETYPES = [
     {
