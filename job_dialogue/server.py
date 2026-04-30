@@ -52,6 +52,8 @@ async def call_archetype(archetype, job):
 
     return {
         "name": archetype["name"],
+        "intro": archetype.get("intro", ""),
+        "intro_label": archetype.get("intro_label", ""),
         "bg": archetype["bg"],
         "border": archetype["border"],
         "full": full,
@@ -98,6 +100,8 @@ def dialogue():
         if isinstance(result, Exception):
             responses.append({
                 "name": archetype["name"],
+                "intro": archetype.get("intro", ""),
+        "intro_label": archetype.get("intro_label", ""),
                 "bg": archetype["bg"],
                 "border": archetype["border"],
                 "error": str(result),

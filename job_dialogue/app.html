@@ -83,7 +83,7 @@
 
     .responses {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
       margin-top: 2.5rem;
     }
@@ -92,6 +92,8 @@
       border-radius: 8px;
       padding: 1.25rem 1.5rem;
       border: 1.5px solid transparent;
+      display: flex;
+      flex-direction: column;
     }
 
     .response-box h2 {
@@ -112,16 +114,33 @@
     .response-box li { margin-bottom: 0.25rem; }
     .response-box strong { font-weight: 500; }
 
+    .response-box-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 0.75rem;
+    }
+
+    .what-is-link {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      text-decoration: underline;
+      line-height: 1;
+    }
+    .what-is-link:hover { color: var(--ink); }
+
     .read-more-btn {
       background: none;
       border: none;
       color: var(--accent);
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
       padding: 0;
-      margin-top: 0.75rem;
+      margin-top: 0;
+      line-height: 1;
       text-decoration: underline;
     }
     .read-more-btn:hover { background: none; color: #8f3614; }
@@ -237,7 +256,10 @@
           ${a.error
             ? `<div class="response-text">Error: ${a.error}</div>`
             : `<div class="response-text" id="text-${i}">${marked.parse(a.summary)}</div>
-               <button class="read-more-btn" onclick="expand(${i})" id="btn-${i}">Read more</button>`
+               <div class="response-box-footer">
+                 <button class="read-more-btn" onclick="expand(${i})" id="btn-${i}">Read more</button>
+                 ${a.intro ? `<a class="what-is-link" href="${a.intro}" target="_blank">${a.intro_label || "What is a " + a.name + "?"}</a>` : ""}
+               </div>`
           }
         </div>
       `).join("");
