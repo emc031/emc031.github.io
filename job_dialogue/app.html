@@ -94,6 +94,7 @@
       border: 1.5px solid transparent;
       display: flex;
       flex-direction: column;
+      transition: opacity 0.28s ease;
     }
 
     .response-box h2 {
@@ -106,6 +107,7 @@
     .response-text {
       font-size: 0.92rem;
       line-height: 1.7;
+      transition: opacity 0.22s ease;
     }
 
     .response-box p { margin-bottom: 0.75rem; }
@@ -145,7 +147,6 @@
     }
     .read-more-btn:hover { background: none; color: #8f3614; }
 
-    .responses.has-expanded .response-box:not(.expanded) { display: none; }
     .responses.has-expanded { grid-template-columns: 1fr; }
     .responses.has-expanded .response-box.expanded {
       max-width: 680px;
@@ -201,6 +202,26 @@
 
 <script>
   let sessionPassword = "";
+  const _animating = new Set();
+
+  function typeText(idx, text, speed = 10) {
+    _animating.add(idx);
+    const el = document.getElementById("text-" + idx);
+    let i = 0;
+    el.textContent = "▋";
+    function tick() {
+      if (!_animating.has(idx)) return;
+      i++;
+      if (i < text.length) {
+        el.textContent = text.slice(0, i) + "▋";
+        setTimeout(tick, speed);
+      } else {
+        _animating.delete(idx);
+        el.innerHTML = marked.parse(text);
+      }
+    }
+    setTimeout(tick, speed);
+  }
 
   async function submitPassword() {
     const input = document.getElementById("password-input");
@@ -255,7 +276,7 @@
           <h2>${a.name}</h2>
           ${a.error
             ? `<div class="response-text">Error: ${a.error}</div>`
-            : `<div class="response-text" id="text-${i}">${marked.parse(a.summary)}</div>
+            : `<div class="response-text" id="text-${i}"></div>
                <div class="response-box-footer">
                  <button class="read-more-btn" onclick="expand(${i})" id="btn-${i}">Read more</button>
                  ${a.intro ? `<a class="what-is-link" href="${a.intro}" target="_blank">${a.intro_label || "What is a " + a.name + "?"}</a>` : ""}
@@ -265,6 +286,9 @@
       `).join("");
 
       window._archetypes = archetypes;
+      archetypes.forEach((a, i) => {
+        if (!a.error) setTimeout(() => typeText(i, a.summary), i * 120);
+      });
     } catch (err) {
       errorEl.textContent = "Error: " + err.message;
       responsesEl.innerHTML = "";
@@ -274,21 +298,58 @@
   }
 
   function expand(i) {
+    _animating.delete(i);
     const a = window._archetypes[i];
-    document.getElementById("text-" + i).innerHTML = marked.parse(a.full);
-    document.getElementById("btn-" + i).textContent = "Read less";
-    document.getElementById("btn-" + i).setAttribute("onclick", `collapse(${i})`);
-    document.getElementById("box-" + i).classList.add("expanded");
-    document.getElementById("responses").classList.add("has-expanded");
+    const responsesEl = document.getElementById("responses");
+    const allBoxes = [...responsesEl.querySelectorAll(".response-box")];
+    const textEl = document.getElementById("text-" + i);
+    const btn = document.getElementById("btn-" + i);
+
+    // Fade out other boxes and current text
+    allBoxes.forEach((box, idx) => { if (idx !== i) box.style.opacity = "0"; });
+    textEl.style.opacity = "0";
+
+    setTimeout(() => {
+      // Hide other boxes and switch to 1-col layout
+      allBoxes.forEach((box, idx) => { if (idx !== i) box.style.display = "none"; });
+      responsesEl.classList.add("has-expanded");
+      document.getElementById("box-" + i).classList.add("expanded");
+      // Swap text and fade in
+      textEl.innerHTML = marked.parse(a.full);
+      requestAnimationFrame(() => requestAnimationFrame(() => textEl.style.opacity = ""));
+    }, 280);
+
+    btn.textContent = "Read less";
+    btn.setAttribute("onclick", `collapse(${i})`);
   }
 
   function collapse(i) {
     const a = window._archetypes[i];
-    document.getElementById("text-" + i).innerHTML = marked.parse(a.summary);
-    document.getElementById("btn-" + i).textContent = "Read more";
-    document.getElementById("btn-" + i).setAttribute("onclick", `expand(${i})`);
-    document.getElementById("box-" + i).classList.remove("expanded");
-    document.getElementById("responses").classList.remove("has-expanded");
+    const responsesEl = document.getElementById("responses");
+    const allBoxes = [...responsesEl.querySelectorAll(".response-box")];
+    const textEl = document.getElementById("text-" + i);
+    const btn = document.getElementById("btn-" + i);
+
+    // Fade out text
+    textEl.style.opacity = "0";
+
+    setTimeout(() => {
+      // Show other boxes at opacity 0, restore layout
+      allBoxes.forEach((box, idx) => {
+        if (idx !== i) { box.style.display = ""; box.style.opacity = "0"; }
+      });
+      responsesEl.classList.remove("has-expanded");
+      document.getElementById("box-" + i).classList.remove("expanded");
+      // Swap text and fade everything in
+      textEl.innerHTML = marked.parse(a.summary);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        textEl.style.opacity = "";
+        allBoxes.forEach((box, idx) => { if (idx !== i) box.style.opacity = ""; });
+      }));
+    }, 250);
+
+    btn.textContent = "Read more";
+    btn.setAttribute("onclick", `expand(${i})`);
   }
 </script>
 </body>
