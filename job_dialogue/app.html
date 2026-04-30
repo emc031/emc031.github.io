@@ -232,7 +232,7 @@
     const errorEl = document.getElementById("gate-error");
     errorEl.textContent = "";
 
-    const res = await fetch("${BACKEND_URL}/api/auth", {
+    const res = await fetch(`${BACKEND_URL}/api/auth`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: input.value }),
@@ -262,7 +262,7 @@
     btn.disabled = true;
 
     try {
-      const res = await fetch("${BACKEND_URL}/api/dialogue", {
+      const res = await fetch(`${BACKEND_URL}/api/dialogue`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ job, password: sessionPassword }),
