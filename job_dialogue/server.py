@@ -6,13 +6,16 @@ from flask_cors import CORS
 import litellm
 from playwright.async_api import async_playwright
 
+import os
+
 from config import MODEL, QUESTION, ARCHETYPES
 try:
-    from config_local import API_KEY, PASSWORD
+    from config_local import LLM_API_KEY, WEBSITE_PASSWORD
 except ImportError:
-    print("ERROR: config_local.py not found. Create job_dialogue/config_local.py with API_KEY and PASSWORD.", file=sys.stderr)
-    API_KEY = None
-    PASSWORD = None
+    LLM_API_KEY = os.environ.get("LLM_API_KEY")
+    WEBSITE_PASSWORD = os.environ.get("WEBSITE_PASSWORD")
+    if not LLM_API_KEY:
+        print("WARNING: No LLM_API_KEY found in config_local.py or environment.", file=sys.stderr)
 
 app = Flask(__name__)
 CORS(app)
@@ -43,7 +46,7 @@ async def call_archetype(archetype, job):
         litellm.completion,
         model=MODEL,
         messages=[{"role": "user", "content": prompt}],
-        api_key=API_KEY,
+        api_key=LLM_API_KEY,
     )
     raw = response.choices[0].message.content
     parts = raw.split("===SUMMARY===", 1)
@@ -64,19 +67,19 @@ async def call_archetype(archetype, job):
 @app.post("/api/auth")
 def auth():
     body = request.json or {}
-    if PASSWORD and body.get("password") != PASSWORD:
+    if WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
         return jsonify({"error": "Incorrect password"}), 401
     return jsonify({"ok": True})
 
 
 @app.post("/api/dialogue")
 def dialogue():
-    if not API_KEY:
+    if not LLM_API_KEY:
         return jsonify({"error": "API key not configured"}), 500
 
     body = request.json or {}
 
-    if PASSWORD and body.get("password") != PASSWORD:
+    if WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
         return jsonify({"error": "Incorrect password"}), 401
 
     job_raw = body.get("job", "").strip()
