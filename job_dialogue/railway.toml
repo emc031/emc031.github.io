@@ -1,5 +1,5 @@
 [build]
-buildCommand = "pip install -r requirements.txt && playwright install --with-deps chromium"
+buildCommand = "pip install -r requirements.txt && PLAYWRIGHT_BROWSERS_PATH=/app/playwright-browsers playwright install chromium"
 
 [deploy]
 startCommand = "gunicorn -w 1 --timeout 120 --bind 0.0.0.0:$PORT server:app"

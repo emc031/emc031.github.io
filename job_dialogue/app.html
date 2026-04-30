@@ -178,7 +178,7 @@
 </head>
 <body>
 <div id="gate" class="screen active">
-  <h1>job dialogue</h1>
+  <h1>password pls</h1>
   <div class="field">
     <input type="password" id="password-input" placeholder="Password…" onkeydown="if(event.key==='Enter'){event.preventDefault();submitPassword();}" />
   </div>
@@ -201,11 +201,15 @@
 </div>
 
 <script>
-  const BACKEND_URL = (window.location.hostname === "localhost" || window.location.protocol === "file:")
-    ? "http://localhost:5000"
-    : "https://emc031githubio-production.up.railway.app";
+  const IS_LOCAL = window.location.hostname === "localhost" || window.location.protocol === "file:";
+  const BACKEND_URL = IS_LOCAL ? "http://localhost:5000" : "https://emc031githubio-production.up.railway.app";
 
   let sessionPassword = "";
+
+  if (IS_LOCAL) {
+    document.getElementById("gate").classList.remove("active");
+    document.getElementById("app").classList.add("active");
+  }
   const _animating = new Set();
 
   function typeText(idx, text, speed = 10) {
