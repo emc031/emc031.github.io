@@ -97,11 +97,25 @@
       transition: opacity 0.28s ease;
     }
 
+    .response-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+
     .response-box h2 {
       font-family: 'Lora', serif;
       font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 0.75rem;
+    }
+
+    .score-badge {
+      font-family: 'Lora', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-left: 0.5rem;
     }
 
     .response-text {
@@ -201,6 +215,18 @@
 </div>
 
 <script>
+  function scoreColor(score) {
+    if (score > 0) return '#2a7a2a';
+    if (score < 0) return '#c0392b';
+    return '#5a5750';
+  }
+
+  function scoreBadgeHtml(score) {
+    if (score == null) return '';
+    const label = (score > 0 ? '+' : '') + score + '/10';
+    return `<span class="score-badge" style="color:${scoreColor(score)}">${label}</span>`;
+  }
+
   const IS_LOCAL = window.location.hostname === "localhost" || window.location.protocol === "file:";
   const BACKEND_URL = IS_LOCAL ? "http://localhost:5000" : "https://emc031githubio-production.up.railway.app";
 
@@ -281,7 +307,10 @@
 
       responsesEl.innerHTML = archetypes.map((a, i) => `
         <div class="response-box" id="box-${i}" style="background:${a.bg}; border-color:${a.border}">
-          <h2>${a.name}</h2>
+          <div class="response-box-header">
+            <h2>${a.name}</h2>
+            ${scoreBadgeHtml(a.score)}
+          </div>
           ${a.error
             ? `<div class="response-text">Error: ${a.error}</div>`
             : `<div class="response-text" id="text-${i}"></div>

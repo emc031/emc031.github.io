@@ -51,7 +51,16 @@ async def call_archetype(archetype, job):
     raw = response.choices[0].message.content
     parts = raw.split("===SUMMARY===", 1)
     full = parts[0].strip()
-    summary = parts[1].strip() if len(parts) == 2 else full
+    rest = parts[1].strip() if len(parts) == 2 else full
+
+    score_parts = rest.split("===SCORE===", 1)
+    summary = score_parts[0].strip()
+    score = None
+    if len(score_parts) == 2:
+        try:
+            score = max(-10, min(10, int(score_parts[1].strip())))
+        except ValueError:
+            pass
 
     return {
         "name": archetype["name"],
@@ -61,6 +70,7 @@ async def call_archetype(archetype, job):
         "border": archetype["border"],
         "full": full,
         "summary": summary,
+        "score": score,
     }
 
 
@@ -79,7 +89,7 @@ def dialogue():
 
     body = request.json or {}
 
-    if WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
+    if not app.debug and WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
         return jsonify({"error": "Incorrect password"}), 401
 
     job_raw = body.get("job", "").strip()
