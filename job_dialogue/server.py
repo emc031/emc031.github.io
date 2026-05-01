@@ -49,7 +49,7 @@ async def resolve_job_text(raw):
 
 
 async def call_archetype(archetype, job):
-    prompt = archetype["description"] + QUESTION + job + RESPONSE_FORMAT
+    prompt = archetype["description"] + QUESTION + RESPONSE_FORMAT + job
     response = await asyncio.to_thread(
         litellm.completion,
         model=MODEL,
@@ -127,7 +127,7 @@ def dialogue():
             responses.append({
                 "name": archetype["name"],
                 "intro": archetype.get("intro", ""),
-        "intro_label": archetype.get("intro_label", ""),
+                "intro_label": archetype.get("intro_label", ""),
                 "bg": archetype["bg"],
                 "border": archetype["border"],
                 "error": str(result),

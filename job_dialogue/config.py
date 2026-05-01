@@ -1,5 +1,6 @@
 # LiteLLM model string — examples:
-#   "claude-sonnet-4-6"          (Anthropic)
+#   "claude-haiku-4-5-20251001" # (Anthropic - smallest & cheapest - $0.25/mtok)
+#   "claude-sonnet-4-6" # (Anthropic - almost best, $5/mtok)
 #   "gemini/gemini-2.5-flash-lite" (Google)
 #   "gpt-4o"                     (OpenAI)
 MODEL = "claude-haiku-4-5-20251001"

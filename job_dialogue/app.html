@@ -276,6 +276,8 @@
     return `<span class="score-badge" style="color:${scoreColor(score)}">${label}</span>`;
   }
 
+  let archetypes = [];
+
   const IS_LOCAL = window.location.hostname === "localhost" || window.location.protocol === "file:";
   const BACKEND_URL = IS_LOCAL ? "http://localhost:5000" : "https://emc031githubio-production.up.railway.app";
 
@@ -362,7 +364,7 @@
         throw new Error(err.error || `Server error ${res.status}`);
       }
 
-      const archetypes = await res.json();
+      archetypes = await res.json();
 
       responsesEl.innerHTML = archetypes.map((a, i) => `
         <div class="response-box" id="box-${i}" style="background:${a.bg}; border-color:${a.border}">
@@ -381,7 +383,6 @@
         </div>
       `).join("");
 
-      window._archetypes = archetypes;
       archetypes.forEach((a, i) => {
         if (!a.error) setTimeout(() => typeText(i, a.summary), i * 120);
       });
@@ -395,7 +396,7 @@
 
   function expand(i) {
     _animating.delete(i);
-    const a = window._archetypes[i];
+    const a = archetypes[i];
     const responsesEl = document.getElementById("responses");
     const allBoxes = [...responsesEl.querySelectorAll(".response-box")];
     const textEl = document.getElementById("text-" + i);
@@ -420,7 +421,7 @@
   }
 
   function collapse(i) {
-    const a = window._archetypes[i];
+    const a = archetypes[i];
     const responsesEl = document.getElementById("responses");
     const allBoxes = [...responsesEl.querySelectorAll(".response-box")];
     const textEl = document.getElementById("text-" + i);
