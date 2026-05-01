@@ -22,7 +22,7 @@ Deploy by pushing to `main`; GitHub Pages publishes automatically.
 - `index.html` — the entire site: inline CSS, content, and a small JS snippet for the mobile hamburger menu
 - `inta.svg` — logo used in the nav and as a faint hero background watermark
 - `inta_retreat.png` — retreat photo in the "in practice" section
-- `job_dialogue/` — web app live at `integralaltruism.com/job_dialogue/app.html`. Files:
+- `career_prism/` — web app live at `integralaltruism.com/career_prism/app.html`. Files:
   - `app.html` — frontend UI only; no LLM logic. Password gate on load (skipped when running locally). Enter submits, Shift+Enter adds newline. Uses `marked.js` (CDN) to render markdown responses. `BACKEND_URL` auto-switches between `localhost:5000` (local) and the Railway URL (production) based on `window.location`.
   - `server.py` — Flask backend. Exposes two endpoints:
     - `POST /api/auth` — checks password, returns 200 or 401. Password check skipped when Flask is in debug mode (i.e. local).
@@ -40,13 +40,13 @@ Deploy by pushing to `main`; GitHub Pages publishes automatically.
 
 **Response format:** the LLM is instructed to return its full assessment, then `===SUMMARY===`, then a short summary paragraph. `server.py` splits on this delimiter and returns both `full` and `summary` fields. The UI types out the summary with a typewriter animation, with a "Read more" button that expands to the full response with a fade transition.
 
-**Deployment:** the Flask backend runs on [Railway](https://railway.app), configured via `Dockerfile` and `railway.toml` (root directory set to `job_dialogue/` in Railway settings). Required Railway environment variables: `LLM_API_KEY`, `WEBSITE_PASSWORD`. The frontend (`app.html`) is served statically via GitHub Pages as part of the main site.
+**Deployment:** the Flask backend runs on [Railway](https://railway.app), configured via `Dockerfile` and `railway.toml` (root directory set to `career_prism/` in Railway settings). Required Railway environment variables: `LLM_API_KEY`, `WEBSITE_PASSWORD`. The frontend (`app.html`) is served statically via GitHub Pages as part of the main site.
 
 **To run locally:**
 ```bash
-source job_dialogue/venv/bin/activate
-python job_dialogue/server.py
-# then open job_dialogue/app.html in a browser (no password required locally)
+source career_prism/venv/bin/activate
+python career_prism/server.py
+# then open career_prism/app.html in a browser (no password required locally)
 ```
 - `CNAME` — sets custom domain to `integralaltruism.com`
 
