@@ -188,6 +188,47 @@
     }
 
     #gate button { width: 100%; }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .app-header h1 { margin-bottom: 0; }
+
+    #feedback-btn {
+      background: transparent;
+      color: #2a7a2a;
+      border: 1.5px solid #2a7a2a;
+      border-radius: 6px;
+      padding: 0.45rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: 1rem;
+    }
+    #feedback-btn:hover { background: #eaf4ea; }
+
+    .powered-by {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .powered-by img { height: 56px; opacity: 0.55; }
+    .powered-by a { color: inherit; text-decoration: underline; }
+    .powered-by a:hover { color: var(--ink); }
   </style>
 </head>
 <body>
@@ -201,7 +242,10 @@
 </div>
 
 <div id="app" class="container screen">
-  <h1>Is this job good for the world?</h1>
+  <div class="app-header">
+    <h1>Is this job good for the world?</h1>
+    <a id="feedback-btn" href="#" target="_blank" rel="noopener" style="display:none">Give Feedback</a>
+  </div>
 
   <div class="field">
     <label for="job-input">Job description</label>
@@ -212,6 +256,11 @@
   <div class="error" id="error-msg"></div>
 
   <div class="responses" id="responses"></div>
+
+  <div class="powered-by">
+    <img src="../inta.svg" alt="" />
+    powered by <a id="inta-link" href="#" target="_blank" rel="noopener">integral altruism</a>
+  </div>
 </div>
 
 <script>
@@ -229,6 +278,16 @@
 
   const IS_LOCAL = window.location.hostname === "localhost" || window.location.protocol === "file:";
   const BACKEND_URL = IS_LOCAL ? "http://localhost:5000" : "https://emc031githubio-production.up.railway.app";
+
+  fetch(`${BACKEND_URL}/api/config`)
+    .then(r => r.json())
+    .then(cfg => {
+      const btn = document.getElementById("feedback-btn");
+      btn.href = cfg.feedback_form;
+      btn.style.display = "";
+      document.getElementById("inta-link").href = cfg.inta_website;
+    })
+    .catch(() => {});
 
   let sessionPassword = "";
 

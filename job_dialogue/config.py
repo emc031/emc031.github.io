@@ -14,9 +14,6 @@ Don't lead with a title, and don't lead with saying that this is your honest per
 
 Show your reasoning about any conclusions you come to.
 
-Structure your response as follows: first your full assessment, then the exact separator ===SUMMARY===, then a single paragraph summary of your assessment (60 words maximum), then the exact separator ===SCORE===, then a single integer from -10 to +10 (where +10 is the best possible job for the world, 0 is morally neutral, and -10 is the most harmful possible job). Output only the integer after ===SCORE===, nothing else.
-
-Job description:
 """
 
 ARCHETYPES = [
@@ -53,3 +50,6 @@ ARCHETYPES = [
         "border": "#a07800",
     },
 ]
+
+FEEDBACK_FORM = "https://forms.gle/zmCpYtZAfw1YoJ1S8"
+INTA_WEBSITE = "https://integralaltruism.com"

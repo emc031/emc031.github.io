@@ -8,7 +8,15 @@ from playwright.async_api import async_playwright
 
 import os
 
-from config import MODEL, QUESTION, ARCHETYPES
+from config import MODEL, QUESTION, ARCHETYPES, FEEDBACK_FORM, INTA_WEBSITE
+
+RESPONSE_FORMAT = """
+
+Structure your response as follows: first your full assessment, then the exact separator ===SUMMARY===, then a single paragraph summary of your assessment (60 words maximum), then the exact separator ===SCORE===, then a single integer from -10 to +10 (where +10 is the best possible job for the world, 0 is morally neutral, and -10 is the most harmful possible job). Output only the integer after ===SCORE===, nothing else.
+
+Job description:
+
+"""
 try:
     from config_local import LLM_API_KEY, WEBSITE_PASSWORD
 except ImportError:
@@ -41,7 +49,7 @@ async def resolve_job_text(raw):
 
 
 async def call_archetype(archetype, job):
-    prompt = archetype["description"] + QUESTION + job
+    prompt = archetype["description"] + QUESTION + job + RESPONSE_FORMAT
     response = await asyncio.to_thread(
         litellm.completion,
         model=MODEL,
@@ -72,6 +80,11 @@ async def call_archetype(archetype, job):
         "summary": summary,
         "score": score,
     }
+
+
+@app.get("/api/config")
+def config():
+    return jsonify({"feedback_form": FEEDBACK_FORM, "inta_website": INTA_WEBSITE})
 
 
 @app.post("/api/auth")
