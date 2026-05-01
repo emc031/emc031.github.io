@@ -12,7 +12,7 @@ from config import MODEL, QUESTION, ARCHETYPES, FEEDBACK_FORM, INTA_WEBSITE
 
 RESPONSE_FORMAT = """
 
-Structure your response as follows: first your full assessment, then the exact separator ===SUMMARY===, then a single paragraph summary of your assessment (60 words maximum), then the exact separator ===SCORE===, then a single integer from -10 to +10 (where +10 is the best possible job for the world, 0 is morally neutral, and -10 is the most harmful possible job). Output only the integer after ===SCORE===, nothing else.
+Structure your response as follows: first your full assessment, then the exact separator ===SUMMARY===, then a single paragraph summary of your assessment (60 words maximum), then the exact separator ===SCORE===, then a single integer from -10 to +10 (where +10 is the best possible job for the world, 0 is morally neutral, and -10 is the most harmful possible job). Output only the integer after ===SCORE===, nothing else. Ensure the score reflects your written assessment — a negative assessment should have a negative score.
 
 Job description:
 
