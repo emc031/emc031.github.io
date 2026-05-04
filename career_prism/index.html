@@ -161,6 +161,9 @@
     }
     .read-more-btn:hover { background: none; color: #8f3614; }
 
+    @media (max-width: 600px) {
+      .responses { grid-template-columns: 1fr; }
+    }
     .responses.has-expanded { grid-template-columns: 1fr; }
     .responses.has-expanded .response-box.expanded {
       max-width: 680px;
