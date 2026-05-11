@@ -6,6 +6,8 @@
 #   "gpt-4o"                     (OpenAI)
 MODEL = "claude-sonnet-4-6"
 
+PASSWORD_REQUIRED = False
+
 QUESTION = """
 
 Given the job description below, would doing this job have a good effect on the world? Give an honest assessment from your perspective.

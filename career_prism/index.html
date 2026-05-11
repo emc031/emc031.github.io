@@ -291,6 +291,10 @@
       btn.href = cfg.feedback_form;
       btn.style.display = "";
       document.getElementById("inta-link").href = cfg.inta_website;
+      if (!cfg.password_required) {
+        document.getElementById("gate").classList.remove("active");
+        document.getElementById("app").classList.add("active");
+      }
     })
     .catch(() => {});
 

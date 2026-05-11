@@ -8,7 +8,7 @@ from playwright.async_api import async_playwright
 
 import os
 
-from config import MODEL, QUESTION, ARCHETYPES, FEEDBACK_FORM, INTA_WEBSITE
+from config import MODEL, QUESTION, ARCHETYPES, FEEDBACK_FORM, INTA_WEBSITE, PASSWORD_REQUIRED
 
 RESPONSE_FORMAT = """
 
@@ -84,13 +84,13 @@ async def call_archetype(archetype, job):
 
 @app.get("/api/config")
 def config():
-    return jsonify({"feedback_form": FEEDBACK_FORM, "inta_website": INTA_WEBSITE})
+    return jsonify({"feedback_form": FEEDBACK_FORM, "inta_website": INTA_WEBSITE, "password_required": PASSWORD_REQUIRED})
 
 
 @app.post("/api/auth")
 def auth():
     body = request.json or {}
-    if not app.debug and WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
+    if not app.debug and PASSWORD_REQUIRED and WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
         return jsonify({"error": "Incorrect password"}), 401
     return jsonify({"ok": True})
 
@@ -102,7 +102,7 @@ def dialogue():
 
     body = request.json or {}
 
-    if not app.debug and WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
+    if not app.debug and PASSWORD_REQUIRED and WEBSITE_PASSWORD and body.get("password") != WEBSITE_PASSWORD:
         return jsonify({"error": "Incorrect password"}), 401
 
     job_raw = body.get("job", "").strip()
