@@ -206,6 +206,51 @@
 
     .callout a { color: var(--accent); font-weight: 500; }
 
+    /* ── TOOL PROMO ── */
+    .tool-promo {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .tool-promo-stripe {
+      display: flex;
+      height: 4px;
+    }
+
+    .tool-promo-stripe span { flex: 1; }
+
+    .tool-promo-body {
+      background: #fff;
+      padding: 1.5rem 1.75rem;
+    }
+
+    .tool-promo-body h3 {
+      font-family: 'Lora', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .tool-promo-body p {
+      font-size: 0.92rem;
+      color: var(--ink-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .tool-promo-link {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.55rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+    .tool-promo-link:hover { background: #8f3614; color: #fff; }
+
     /* ── FOOTER ── */
     footer {
       max-width: var(--max-w);
@@ -315,6 +360,22 @@
       <img src="inta_retreat.png" alt="int/a summit #1, July 2025, Kent, UK" />
       <figcaption>int/a summit #1, July '25, Kent, UK</figcaption>
     </figure>
+  </section>
+
+  <section>
+    <div class="tool-promo">
+      <div class="tool-promo-stripe">
+        <span style="background:#2a7a2a"></span>
+        <span style="background:#c0392b"></span>
+        <span style="background:#1a5fa8"></span>
+        <span style="background:#a07800"></span>
+      </div>
+      <div class="tool-promo-body">
+        <h3>A simple career tool</h3>
+        <p>Considering applying to a job but confused about the impact it will have on the world? This will help you consider perspectives from an array of different worldviews.</p>
+        <a href="/career_prism" class="tool-promo-link">Try it out</a>
+      </div>
+    </div>
   </section>
 
   <section id="reading">
