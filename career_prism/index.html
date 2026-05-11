@@ -235,7 +235,7 @@
   </style>
 </head>
 <body>
-<div id="gate" class="screen active">
+<div id="gate" class="screen">
   <h1>password pls</h1>
   <div class="field">
     <input type="password" id="password-input" placeholder="Password…" onkeydown="if(event.key==='Enter'){event.preventDefault();submitPassword();}" />
@@ -291,12 +291,15 @@
       btn.href = cfg.feedback_form;
       btn.style.display = "";
       document.getElementById("inta-link").href = cfg.inta_website;
-      if (!cfg.password_required) {
-        document.getElementById("gate").classList.remove("active");
+      if (cfg.password_required) {
+        document.getElementById("gate").classList.add("active");
+      } else {
         document.getElementById("app").classList.add("active");
       }
     })
-    .catch(() => {});
+    .catch(() => {
+      document.getElementById("gate").classList.add("active");
+    });
 
   let sessionPassword = "";
 
