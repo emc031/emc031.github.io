@@ -38,7 +38,7 @@ ARCHETYPES = [
         "border": "#c0392b",
     },
     {
-        "name": "Techno-Optomist",
+        "name": "Techno-Optimist",
         "intro": "https://a16z.com/the-techno-optimist-manifesto/",
         "intro_label": "What is techno-optimism?",
         "description": "You are a techno-optimist, who believes technological progress and innovation are the primary drivers of human flourishing. You evaluate jobs based on whether they help build new capabilities, accelerate progress, and unlock abundance at scale. You’re inclined to favor ambitious, forward-moving work—even if the risks aren’t fully understood yet.",
