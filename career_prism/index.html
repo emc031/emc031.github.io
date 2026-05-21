@@ -177,7 +177,7 @@
     .screen { display: none; }
     .screen.active { display: block; }
 
-    #gate {
+    #gate, #error-screen {
       max-width: 360px;
       margin: 8rem auto;
       text-align: center;
@@ -191,6 +191,9 @@
     }
 
     #gate button { width: 100%; }
+
+    #error-screen p { color: var(--ink-muted); margin-bottom: 1.25rem; }
+    #error-screen button { width: 100%; }
 
     .app-header {
       display: flex;
@@ -235,6 +238,12 @@
   </style>
 </head>
 <body>
+<div id="error-screen" class="screen">
+  <h1>Connection error</h1>
+  <p>Could not reach the server. Please try again in a moment.</p>
+  <button onclick="location.reload()">Retry</button>
+</div>
+
 <div id="gate" class="screen">
   <h1>password pls</h1>
   <div class="field">
@@ -298,7 +307,7 @@
       }
     })
     .catch(() => {
-      document.getElementById("gate").classList.add("active");
+      document.getElementById("error-screen").classList.add("active");
     });
 
   let sessionPassword = "";
@@ -333,13 +342,19 @@
     const errorEl = document.getElementById("gate-error");
     errorEl.textContent = "";
 
-    const res = await fetch(`${BACKEND_URL}/api/auth`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: input.value }),
-    }).catch(() => null);
+    let res;
+    try {
+      res = await fetch(`${BACKEND_URL}/api/auth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: input.value }),
+      });
+    } catch {
+      errorEl.textContent = "Could not reach server. Please try again.";
+      return;
+    }
 
-    if (!res || !res.ok) {
+    if (!res.ok) {
       errorEl.textContent = "Incorrect password.";
       input.value = "";
       return;
