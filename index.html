@@ -251,6 +251,67 @@
     }
     .tool-promo-link:hover { background: #8f3614; color: #fff; }
 
+    /* ── FESTIVAL BANNER ── */
+    .festival-banner {
+      max-width: var(--max-w);
+      margin: 0 auto 2rem;
+      padding: 0 2rem;
+    }
+
+    .festival-banner-inner {
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      background: var(--accent-light);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .festival-banner-text {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .festival-banner-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .festival-banner-title {
+      font-family: 'Lora', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+
+    .festival-banner-desc {
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+      margin: 0;
+    }
+
+    .festival-banner-link {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.55rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .festival-banner-link:hover { background: #8f3614; color: #fff; }
+
     /* ── FOOTER ── */
     footer {
       max-width: var(--max-w);
@@ -352,7 +413,7 @@
     <h2>in practice</h2>
     <p>We're running a number of community-building experiments, including residential retreats, an online speaker series, and regular in-person gatherings in London, Berlin, and Paris. We're also testing out ways to create space for new ideas to emerge like hackathons, conferences, and practice circles.</p>
 
-    <p>To learn more, check out our <a href="https://integralaltruism.substack.com/" target="_blank">substack</a>. To get involved, express interest <a href="https://docs.google.com/forms/d/e/1FAIpQLSfAbQM6FjKTZF-EwD4yA-Ulk_IgI8GhjKe_dnajqOdGX4KR3g/viewform" target="_blank">here</a>. Or you can <a href="https://ko-fi.com/integralaltruism" target="_blank">donate here</a> to help us grow!</p>
+    <p>To learn more, check out our <a href="https://integralaltruism.substack.com/" target="_blank">substack</a>. To get involved, express interest <a href="https://docs.google.com/forms/d/e/1FAIpQLSfAbQM6FjKTZF-EwD4yA-Ulk_IgI8GhjKe_dnajqOdGX4KR3g/viewform" target="_blank">here</a> and check out our upcoming <a href="https://wellspring.integralaltruism.com/" target="_blank">festival</a>. Or you can <a href="https://ko-fi.com/integralaltruism" target="_blank">donate here</a> to help us grow!</p>
 
     <p>We’re also currently looking for a grant to establish a sustainable funding source. If you'd like to support int/a to grow with a grant, or know someone who might, see our general funding call <a href="https://docs.google.com/document/d/1EIBOHIlUR8xlOF0D4iT7YfhY8rPXra2oG7Cz45qY_t0/edit?tab=t.0#heading=h.lxvpj15n5xww", target="_blank">here</a>.</p>
     
@@ -362,21 +423,27 @@
     </figure>
   </section>
 
-  <section>
-    <div class="tool-promo">
-      <div class="tool-promo-stripe">
-        <span style="background:#2a7a2a"></span>
-        <span style="background:#c0392b"></span>
-        <span style="background:#1a5fa8"></span>
-        <span style="background:#a07800"></span>
+  <div class="festival-banner">
+    <div class="festival-banner-inner">
+      <div class="festival-banner-text">
+        <div class="festival-banner-label">upcoming festival</div>
+        <div class="festival-banner-title">The Wellspring</div>
+        <p class="festival-banner-desc">An integral altruism festival — come together to explore, connect, and build the movement.</p>
       </div>
-      <div class="tool-promo-body">
-        <h3>A simple career tool</h3>
-        <p>Considering applying to a job but confused about the impact it will have on the world? This will help you consider perspectives from an array of different worldviews.</p>
-        <a href="/career_prism" class="tool-promo-link">Try it out</a>
-      </div>
+      <a href="https://wellspring.integralaltruism.com/" target="_blank" class="festival-banner-link">Find out more</a>
     </div>
-  </section>
+  </div>
+
+  <div class="festival-banner">
+    <div class="festival-banner-inner">
+      <div class="festival-banner-text">
+        <div class="festival-banner-label">A simple career tool</div>
+        <div class="festival-banner-title">Career Prism</div>
+        <p class="festival-banner-desc">Considering applying to a job but confused about the impact it will have on the world? This will help you consider perspectives from an array of different worldviews.</p>
+      </div>
+      <a href="/career_prism" class="festival-banner-link">Try it out</a>
+    </div>
+  </div>
 
   <section id="reading">
     <h2>some int/a flavoured reading</h2>
