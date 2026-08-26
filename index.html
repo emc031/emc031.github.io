@@ -326,6 +326,30 @@
       gap: 0.5rem;
     }
 
+    .fiscal-sponsor {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+    .fiscal-sponsor-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--ink-muted);
+      text-decoration: none;
+    }
+    .fiscal-sponsor-link:hover { color: var(--accent); }
+    .fiscal-sponsor-link img {
+      height: 18px;
+      width: auto;
+    }
+
     .hamburger {
   display: none;
   flex-direction: column;
@@ -413,7 +437,7 @@
     <h2>in practice</h2>
     <p>We're running a number of community-building experiments, including residential retreats, an online speaker series, and regular in-person gatherings in London, Berlin, and Paris. We're also testing out ways to create space for new ideas to emerge like hackathons, conferences, and practice circles.</p>
 
-    <p>To learn more, check out our <a href="https://integralaltruism.substack.com/" target="_blank">substack</a>. To get involved, express interest <a href="https://docs.google.com/forms/d/e/1FAIpQLSfAbQM6FjKTZF-EwD4yA-Ulk_IgI8GhjKe_dnajqOdGX4KR3g/viewform" target="_blank">here</a> and check out our upcoming <a href="https://wellspring.integralaltruism.com/" target="_blank">festival</a>. Or you can <a href="https://ko-fi.com/integralaltruism" target="_blank">donate here</a> to help us grow!</p>
+    <p>To learn more, check out our <a href="https://integralaltruism.substack.com/" target="_blank">substack</a>. To get involved, express interest <a href="https://docs.google.com/forms/d/e/1FAIpQLSfAbQM6FjKTZF-EwD4yA-Ulk_IgI8GhjKe_dnajqOdGX4KR3g/viewform" target="_blank">here</a>. Or you can <a href="https://ko-fi.com/integralaltruism" target="_blank">donate here</a> to help us grow!</p>
 
     <p>We’re also currently looking for a grant to establish a sustainable funding source. If you'd like to support int/a to grow with a grant, or know someone who might, see our general funding call <a href="https://docs.google.com/document/d/1EIBOHIlUR8xlOF0D4iT7YfhY8rPXra2oG7Cz45qY_t0/edit?tab=t.0#heading=h.lxvpj15n5xww", target="_blank">here</a>.</p>
     
@@ -422,17 +446,6 @@
       <figcaption>int/a summit #1, July '25, Kent, UK</figcaption>
     </figure>
   </section>
-
-  <div class="festival-banner">
-    <div class="festival-banner-inner">
-      <div class="festival-banner-text">
-        <div class="festival-banner-label">upcoming festival</div>
-        <div class="festival-banner-title">The Wellspring</div>
-        <p class="festival-banner-desc">An integral altruism festival — come together to explore, connect, and build the movement.</p>
-      </div>
-      <a href="https://wellspring.integralaltruism.com/" target="_blank" class="festival-banner-link">Find out more</a>
-    </div>
-  </div>
 
   <div class="festival-banner">
     <div class="festival-banner-inner">
@@ -532,6 +545,14 @@
       <a href="https://ko-fi.com/integralaltruism" target="_blank">donate</a>
     </span>
   </footer>
+
+  <div class="fiscal-sponsor">
+    <span>Fiscally sponsored by</span>
+    <a href="https://manifund.org" target="_blank" class="fiscal-sponsor-link">
+      <img src="manifund_logo.png" alt="Manifund logo" />
+      <span>Manifund</span>
+    </a>
+  </div>
 
 </body>
 </html>
